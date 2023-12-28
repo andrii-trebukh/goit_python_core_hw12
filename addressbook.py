@@ -37,7 +37,7 @@ class Name(Field):
 class Phone(Field):
     def is_valid(self, value):
         if len(value) != 10 or re.search(r"\D", value):
-            raise ValueError("Incorrect phone number format")
+            raise ValueError("Incorrect phone number format. Should be 10 digits")
         return True
 
 
@@ -56,10 +56,15 @@ class Birthday(Field):
 
 class Record:
     def __init__(self, name, birthday=None):
+        if not name:
+            raise ValueError("Name is not specified")
         self.name = Name(name)
         self.phones = []
         self.birthday = Birthday(birthday) if birthday else None
 
+    def set_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
+    
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
@@ -116,9 +121,13 @@ class AddressBook(UserDict):
         self.data[name] = record
 
     def find(self, name):
+        if not self.data.get(name):
+            raise ValueError(f'Name "{name}" does not exist')
         return self.data.get(name)
 
     def delete(self, name):
+        if not self.data.get(name):
+            raise ValueError(f'Name "{name}" does not exist')
         if self.data.get(name):
             self.data.pop(name)
 
@@ -213,4 +222,4 @@ class AddressBook(UserDict):
             items += tuple(phone.value for phone in record.phones)
             for item in items:
                 if item.count(sample):
-                    print(f"Contact found: {record}")
+                    yield record
