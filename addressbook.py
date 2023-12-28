@@ -37,7 +37,9 @@ class Name(Field):
 class Phone(Field):
     def is_valid(self, value):
         if len(value) != 10 or re.search(r"\D", value):
-            raise ValueError("Incorrect phone number format. Should be 10 digits")
+            raise ValueError(
+                "Incorrect phone number format. Should be 10 digits"
+            )
         return True
 
 
@@ -64,7 +66,7 @@ class Record:
 
     def set_birthday(self, birthday):
         self.birthday = Birthday(birthday)
-    
+
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
